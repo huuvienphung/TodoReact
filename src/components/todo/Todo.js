@@ -9,6 +9,11 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import FolderIcon from '@material-ui/icons/Folder';
 import React from 'react';
+import db from '../../firebase';
+
+const deleteTodo = (id) => {
+    db.collection('todos').doc(id).delete();
+};
 
 const Todo = (props) => {
     return (
@@ -18,9 +23,13 @@ const Todo = (props) => {
                     <FolderIcon />
                 </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={props.todo} />
+            <ListItemText primary={props.todo.todo} />
             <ListItemSecondaryAction>
-                <IconButton edge='end' aria-label='delete'>
+                <IconButton
+                    edge='end'
+                    aria-label='delete'
+                    onClick={() => deleteTodo(props.todo.id)}
+                >
                     <DeleteIcon />
                 </IconButton>
             </ListItemSecondaryAction>

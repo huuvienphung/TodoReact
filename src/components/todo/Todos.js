@@ -27,7 +27,10 @@ const Todos = () => {
             .onSnapshot((snapshot) => {
                 dispatch(
                     setTodos({
-                        todos: snapshot.docs.map((doc) => doc.data().todo),
+                        todos: snapshot.docs.map((doc) => ({
+                            id: doc.id,
+                            todo: doc.data().todo,
+                        })),
                     })
                 );
             });
