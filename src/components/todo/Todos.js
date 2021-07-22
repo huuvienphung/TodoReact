@@ -1,7 +1,7 @@
 import { Button, ButtonGroup, List, TextField } from '@material-ui/core';
 import firebase from 'firebase/app';
 import 'firebase/firebase-firestore';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import db from '../../firebase';
@@ -15,10 +15,10 @@ const Todos = () => {
         handleSubmit,
         reset,
         formState: { errors },
-        watch,
     } = useForm();
 
     // use selector/dispatch
+    const [editTodo, setEditTodo] = useState(null);
     const todos = useSelector(selectTodos);
     const todo = useSelector(selectTodo);
     const dispatch = useDispatch();
@@ -40,11 +40,15 @@ const Todos = () => {
         // eslint-disable-next-line
     }, []);
 
-    // useEffect(() => {
-    // console.log('todo:', todo?.todo.todo);
-    // register('valueTodo', { value: todo?.todo.todo });
-    // eslint-disable-next-line
-    // }, [todo]);
+    useEffect(() => {
+        console.log('todo:', todo?.todo);
+        // register('valueTodo', { value: todo?.todo.todo });
+        if (todo) {
+            setEditTodo(todo.todo);
+            console.log('editTodo: ', editTodo);
+        }
+        // eslint-disable-next-line
+    }, [todo]);
 
     // submit form
     const onSubmit = (data) => {
