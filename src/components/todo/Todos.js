@@ -40,15 +40,15 @@ const Todos = () => {
         // eslint-disable-next-line
     }, []);
 
-    useEffect(() => {
-        console.log('todo:', todo?.todo);
-        // register('valueTodo', { value: todo?.todo.todo });
-        if (todo) {
-            setEditTodo(todo.todo);
-            console.log('editTodo: ', editTodo);
-        }
-        // eslint-disable-next-line
-    }, [todo]);
+    // useEffect(() => {
+    // console.log('todo:', todo?.todo);
+    // register('valueTodo', { value: todo?.todo.todo });
+    // if (todo) {
+    //     setEditTodo(todo.todo);
+    //     console.log('editTodo: ', editTodo);
+    // }
+    // eslint-disable-next-line
+    // }, [todo]);
 
     // submit form
     const onSubmit = (data) => {
