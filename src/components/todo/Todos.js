@@ -1,4 +1,4 @@
-import { Button, List, TextField } from '@material-ui/core';
+import { Button, ButtonGroup, List, TextField } from '@material-ui/core';
 import firebase from 'firebase/app';
 import 'firebase/firebase-firestore';
 import React, { useEffect } from 'react';
@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import db from '../../firebase';
 import Todo from './Todo';
-import { selectTodos, setTodos } from './todosSlice';
+import { selectTodo, selectTodos, setTodo, setTodos } from './todosSlice';
 
 const Todos = () => {
     // form hook
@@ -15,12 +15,15 @@ const Todos = () => {
         handleSubmit,
         reset,
         formState: { errors },
+        watch,
     } = useForm();
 
-    // use selec/dispatch
+    // use selector/dispatch
     const todos = useSelector(selectTodos);
+    const todo = useSelector(selectTodo);
     const dispatch = useDispatch();
 
+    // call api firebase
     useEffect(() => {
         db.collection('todos')
             .orderBy('timestamp', 'desc')
@@ -37,39 +40,65 @@ const Todos = () => {
         // eslint-disable-next-line
     }, []);
 
+    // useEffect(() => {
+    // console.log('todo:', todo?.todo.todo);
+    // register('valueTodo', { value: todo?.todo.todo });
+    // eslint-disable-next-line
+    // }, [todo]);
+
     // submit form
     const onSubmit = (data) => {
-        db.collection('todos').add({
-            todo: data.todo,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        });
-        // dispatch(addTodo({ todo: data.todo }));
+        if (todo) {
+            db.collection('todos').doc(todo?.todo.id).set(
+                {
+                    todo: data.valueTodo,
+                },
+                { merge: true }
+            );
+            dispatch(setTodo({ todo: null }));
+        } else {
+            db.collection('todos').add({
+                todo: data.valueTodo,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            });
+        }
         reset();
     };
 
     return (
         <div>
             <form onSubmit={handleSubmit(onSubmit)}>
-                {errors.todo && <span>input is required</span>}
+                {errors.valueTodo && <span>input is required</span>}
                 <br />
                 <TextField
                     type='text'
-                    {...register('todo', { required: true })}
+                    {...register('valueTodo', { required: true })}
                     id='standard-basic'
-                    label='New Todo'
+                    label={
+                        todo ? `Before value: ${todo?.todo.todo}` : 'New Todo'
+                    }
                 />
-                <Button
-                    type='submit'
-                    value='Submit'
-                    variant='contained'
-                    color='primary'
-                >
-                    Add Todo
-                </Button>
+                <ButtonGroup>
+                    <Button type='submit' variant='contained' color='primary'>
+                        {todo ? 'Update Todo' : 'Add Todo'}
+                    </Button>
+                    {todo && (
+                        <Button
+                            variant='contained'
+                            color='secondary'
+                            onClick={() => {
+                                dispatch(setTodo({ todo: null }));
+                                reset();
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                    )}
+                </ButtonGroup>
             </form>
 
             <List component='nav' aria-label='mailbox folders'>
-                {todos.map((todo, index) => {
+                {todos?.map((todo, index) => {
                     return <Todo key={index} todo={todo} />;
                 })}
             </List>

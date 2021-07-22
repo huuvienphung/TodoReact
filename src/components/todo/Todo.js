@@ -6,21 +6,34 @@ import {
     ListItemSecondaryAction,
     ListItemText,
 } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FolderIcon from '@material-ui/icons/Folder';
+import { CreateOutlined, Delete, Folder } from '@material-ui/icons';
+import 'firebase/firebase-firestore';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import db from '../../firebase';
-
-const deleteTodo = (id) => {
-    db.collection('todos').doc(id).delete();
-};
+import { setTodo } from './todosSlice';
 
 const Todo = (props) => {
+    const dispatch = useDispatch();
+
+    const deleteTodo = () => {
+        db.collection('todos').doc(props.todo.id).delete();
+    };
+
+    // const editTodo = () => {
+    //     db.collection('todos').doc(props.todo.id).set(
+    //         {
+    //             todo: 'đã edit',
+    //         },
+    //         { merge: true }
+    //     );
+    // };
+
     return (
         <ListItem button>
             <ListItemAvatar>
                 <Avatar>
-                    <FolderIcon />
+                    <Folder />
                 </Avatar>
             </ListItemAvatar>
             <ListItemText primary={props.todo.todo} />
@@ -28,9 +41,17 @@ const Todo = (props) => {
                 <IconButton
                     edge='end'
                     aria-label='delete'
-                    onClick={() => deleteTodo(props.todo.id)}
+                    onClick={() => dispatch(setTodo({ todo: props }))}
+                    style={{ marginRight: '15px' }}
                 >
-                    <DeleteIcon />
+                    <CreateOutlined />
+                </IconButton>
+                <IconButton
+                    edge='end'
+                    aria-label='delete'
+                    onClick={() => deleteTodo()}
+                >
+                    <Delete />
                 </IconButton>
             </ListItemSecondaryAction>
         </ListItem>
