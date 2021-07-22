@@ -20,15 +20,6 @@ const Todo = (props) => {
         db.collection('todos').doc(props.todo.id).delete();
     };
 
-    // const editTodo = () => {
-    //     db.collection('todos').doc(props.todo.id).set(
-    //         {
-    //             todo: 'đã edit',
-    //         },
-    //         { merge: true }
-    //     );
-    // };
-
     return (
         <ListItem button>
             <ListItemAvatar>

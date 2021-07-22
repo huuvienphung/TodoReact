@@ -1,12 +1,12 @@
 import { Button, ButtonGroup, List, TextField } from '@material-ui/core';
 import firebase from 'firebase/app';
 import 'firebase/firebase-firestore';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import db from '../../firebase';
 import Todo from './Todo';
-import { selectTodo, selectTodos, setTodo, setTodos } from './todosSlice';
+import { selectTodos, setTodo, setTodos } from './todosSlice';
 
 const Todos = () => {
     // form hook
@@ -18,9 +18,7 @@ const Todos = () => {
     } = useForm();
 
     // use selector/dispatch
-    const [editTodo, setEditTodo] = useState(null);
-    const todos = useSelector(selectTodos);
-    const todo = useSelector(selectTodo);
+    const { todos, todo } = useSelector(selectTodos);
     const dispatch = useDispatch();
 
     // call api firebase
@@ -39,16 +37,6 @@ const Todos = () => {
             });
         // eslint-disable-next-line
     }, []);
-
-    // useEffect(() => {
-    // console.log('todo:', todo?.todo);
-    // register('valueTodo', { value: todo?.todo.todo });
-    // if (todo) {
-    //     setEditTodo(todo.todo);
-    //     console.log('editTodo: ', editTodo);
-    // }
-    // eslint-disable-next-line
-    // }, [todo]);
 
     // submit form
     const onSubmit = (data) => {
